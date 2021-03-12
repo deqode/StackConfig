@@ -1,0 +1,207 @@
+syntax = "proto3";
+option go_package = ".;appconfig";
+
+message AppConfig{
+    string appName = 1;
+    repeated ServiceConfig services = 2;
+    DispatchConfig dispatchConfig = 3;
+}
+
+message ServiceConfig{
+    // app Id
+    string application = 1;
+    // service name
+    string service = 2;
+    // run time environment used by service
+    Runtime runtime = 3;
+    // Python 2.7 runtime configuration
+    Python27Config python27Config = 4;
+    // Ruby runtime config
+    RubyConfig rubyConfig = 5;
+    // Node runtime config
+    NodeConfig nodeConfig = 6;
+    // applicable for scaling instances of class F
+    AutomaticScaling automaticScaling = 7;
+    // applicable for scaling instances of class B
+    BasicScaling basicScaling = 8;
+    // applicable for scaling instances of class B
+    ManualScaling manualScaling = 9;
+}
+
+message Python27Config{
+    // run time environment's api version
+    int32 apiVersion = 1;
+    // it can be default or legacy
+    AutoIdPolicy autoIdPolicy = 2;
+    // list of builtin handlers for common application functions
+    repeated Builtin builtins = 3;
+    // global default cache period for all static file handlers for an application
+    string defaultExpiration = 4;
+    // list of environment variables available to your app
+    repeated EnvVariable envVariables = 5;
+    // custom error pages that are returned for different error types
+    repeated ErrorHandler errorHandlers = 6;
+    // list of URL patterns and descriptions of how they should be handled
+    repeated Handler handlers = 7;
+}
+
+message RubyConfig{
+    string defaultExpiration = 1;
+    // the command to start the ruby service
+    string entrypoint = 2;
+    repeated EnvVariable envVariables = 3;
+    repeated ErrorHandler errorHandlers = 4;
+    repeated Handler handlers = 5;
+    // configure warmup requests to improve performance
+    InboundService inboundService = 6;
+    // instance class for this service
+    InstanceClass instanceClass = 7;
+    // configure your application to use a Serverless VPC Access connector
+    VpcAccessConnector vpcAccessConnector = 8;
+}
+
+message NodeConfig{
+    string defaultExpiration = 1;
+    // overrides the default startup behavior by executing the entrypoint command when your app starts.
+    string entrypoint = 2;
+    repeated EnvVariable envVariables = 3;
+    repeated ErrorHandler errorHandlers = 4;
+    repeated Handler handlers = 5;
+    InboundService inboundService = 6;
+    InstanceClass instanceClass = 7;
+    VpcAccessConnector vpcAccessConnector = 8;
+}
+
+message Builtin{
+    BuiltinKeys builtinKeys = 1;
+    BuiltinValues builtinValues = 2;
+} 
+
+message ErrorHandler{
+    ErrorCodes errorCode = 1;
+    string file = 2;
+}
+
+message Handler{
+    //
+    string url = 1;
+    string script = 2;
+    Login login = 3;
+    // upload static files to code so that service can read them
+    bool applicationReadable = 4;
+    // action when user is not logged in
+    AuthFailAction authFailAction = 5;
+    // length of time a static file served by this handler should be cached by web proxies and browsers
+    string expiration = 6;
+    // set http headers for responses of your static file or directory handlers
+    repeated HttpHeader httpHeaders = 7;
+    // if specified, all files served by this handler will be served using the specified mime type
+    string mimeType = 8;
+    // set the http response code returned when performing a redirect
+    int32 redirectHttpResponseCode = 9;
+    //
+    Secure secure = 10;
+    string staticDir = 11;
+    string staticFiles = 12;
+    string upload = 13;
+}
+
+message DispatchConfig{
+    repeated Dispatch dispatch = 1;
+}
+
+message Dispatch{
+    string url = 1;
+    string module = 2;
+}
+
+message EnvVariable{
+    string envName = 1;
+    string envValue = 2;
+}
+
+message HttpHeader{
+    string header = 1;
+    string value = 2;
+}
+
+message AutomaticScaling{
+    int32 maxInstances = 1;
+    int32 minInstances = 2;
+    int32 maxIdleInstances = 3;
+    int32 minIdleInstances = 4;
+    float targetCpuUtilization = 5;
+    float targetThroughputUtilization = 6;
+    int32 maxConcurrentRequests = 7;
+}
+
+message BasicScaling{
+    int32 maxInstances = 1;
+    string idleTimeout = 2;
+}
+
+message ManualScaling{
+    int32 instances = 1;
+}
+
+message VpcAccessConnector{
+    string name = 1;
+}
+
+enum AutoIdPolicy{
+    default = 0;
+    legacy = 1;
+}
+
+enum Runtime{
+    python27 = 0;
+    ruby25 = 1;
+    ruby26 = 2;
+    ruby27 = 3;
+    nodejs14 = 4;
+    nodejs12 = 5;
+    nodejs10 = 6;
+}
+
+enum BuiltinKeys{
+    appstats = 0;
+    deferred = 1;
+    rempteApi = 2;
+}
+
+enum BuiltinValues{
+    on = 0;
+    off = 1;
+}
+
+enum ErrorCodes{
+    overQuota = 0;
+    dosApiDenial = 1;
+    timeout = 2;
+}
+
+enum Login{
+    optional = 0;
+    required  = 1;
+    admin = 2;
+}
+
+enum AuthFailAction{
+    redirect = 0;
+    unauthorized = 1;
+}
+
+enum Secure{
+    optional_ = 0;
+    never = 1;
+    always = 2;
+}
+
+enum InboundService{
+    warmup = 0;
+}
+
+enum InstanceClass{
+    F = 0;
+    B = 1;
+}
