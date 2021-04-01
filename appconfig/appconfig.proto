@@ -1,31 +1,64 @@
 syntax = "proto3";
-option go_package = ".;appconfig";
+option go_package = ".;pb";
+
+import "validate/validate.proto";
 
 message AppConfig{
-    string appName = 1;
-    repeated ServiceConfig services = 2;
-    DispatchConfig dispatchConfig = 3;
+    int32 version = 1;
+    string appId = 2;
+    string appName = 3;
+    repeated ServiceConfig services = 4;
+    DispatchConfig dispatchConfig = 5;
 }
 
 message ServiceConfig{
-    // app Id
-    string application = 1;
-    // service name
-    string service = 2;
+    // service version
+    int32 version = 1;
+    // service id
+    string serviceId = 2;
     // run time environment used by service
     Runtime runtime = 3;
-    // Python 2.7 runtime configuration
-    Python27Config python27Config = 4;
-    // Ruby runtime config
-    RubyConfig rubyConfig = 5;
-    // Node runtime config
-    NodeConfig nodeConfig = 6;
-    // applicable for scaling instances of class F
-    AutomaticScaling automaticScaling = 7;
-    // applicable for scaling instances of class B
-    BasicScaling basicScaling = 8;
-    // applicable for scaling instances of class B
-    ManualScaling manualScaling = 9;
+    // runtime configuration
+    RuntimeConfig runtimeConfig = 4;
+    // automatic scaling settings, this is by default
+    AutomaticScaling automaticScaling = 5;
+    // manual scaling settings
+    ManualScaling manualScaling = 6;
+    // network settings
+    Network network = 7;
+    // resource settings
+    Resource resources = 8;
+    // custom liveness checks, confirm that VM and Docker container are running
+    LivenessChecks livenessChecks = 9;
+    // custom readiness checks, confirm that your instance is ready to accept incoming requests
+    ReadynessChecks readynessChecks = 10;
+    // global default cache period for all static file handlers for an application
+    string defaultExpiration = 11;
+    // list of environment variables available to your app
+    repeated EnvVariable envVariables = 12;
+    // custom error pages that are returned for different error types
+    repeated ErrorHandler errorHandlers = 13;
+    // list of URL patterns and descriptions of how they should be handled
+    repeated Handler handlers = 14;
+    // configure warmup requests to improve performance
+    InboundService inboundService = 15;
+    // files in the application directory that are not to be uploaded
+    repeated string skipFiles = 16;
+    Git git = 17;
+    repeated Database databases = 18;
+    // services on which this service depends
+    repeated string dependson = 19;
+}
+
+message RuntimeConfig{
+    oneof runtimeConfigs{
+        // Python 2.7 runtime configuration
+        Python27Config python27Config = 1;
+        // Ruby runtime config
+        RubyConfig rubyConfig = 2;
+        // Node runtime config
+        NodeConfig nodeConfig = 3;
+    }
 }
 
 message Python27Config{
@@ -35,41 +68,48 @@ message Python27Config{
     AutoIdPolicy autoIdPolicy = 2;
     // list of builtin handlers for common application functions
     repeated Builtin builtins = 3;
-    // global default cache period for all static file handlers for an application
-    string defaultExpiration = 4;
-    // list of environment variables available to your app
-    repeated EnvVariable envVariables = 5;
-    // custom error pages that are returned for different error types
-    repeated ErrorHandler errorHandlers = 6;
-    // list of URL patterns and descriptions of how they should be handled
-    repeated Handler handlers = 7;
+    Framework framework = 4;
+    repeated ORM orms = 5;
+    repeated Library libraries = 6;
 }
 
 message RubyConfig{
-    string defaultExpiration = 1;
-    // the command to start the ruby service
-    string entrypoint = 2;
-    repeated EnvVariable envVariables = 3;
-    repeated ErrorHandler errorHandlers = 4;
-    repeated Handler handlers = 5;
-    // configure warmup requests to improve performance
-    InboundService inboundService = 6;
-    // instance class for this service
-    InstanceClass instanceClass = 7;
-    // configure your application to use a Serverless VPC Access connector
-    VpcAccessConnector vpcAccessConnector = 8;
+    // command to start the ruby service
+    Entrypoint entrypoint = 1;
+    Framework framework = 2;
+    repeated ORM orms = 3;
+    repeated Library libraries = 4;
 }
 
 message NodeConfig{
-    string defaultExpiration = 1;
     // overrides the default startup behavior by executing the entrypoint command when your app starts.
-    string entrypoint = 2;
-    repeated EnvVariable envVariables = 3;
-    repeated ErrorHandler errorHandlers = 4;
-    repeated Handler handlers = 5;
-    InboundService inboundService = 6;
-    InstanceClass instanceClass = 7;
-    VpcAccessConnector vpcAccessConnector = 8;
+    Entrypoint entrypoint = 1;
+    Framework framework = 2;
+    repeated ORM orms = 3;
+    repeated Library libraries = 4;
+}
+
+message Network{
+    // tag assigned to a group of instances, we can target an action to the group of instances
+    string instanceTag = 1;
+    // use this setting to specify a network name
+    string name = 2;
+    // segment your network and use a custom subnetwork
+    string subnetworkName = 3;
+    // set to true to configure App Engine to route multiple sequential requests for a given user to the same App Engine instance
+    bool sessionAffinity = 4;
+    // forward ports from instance to the container
+    repeated ForwardedPort forwardedPorts = 5;
+}
+
+message Resource{
+    // number of cores
+    int32 cpu = 1 [(validate.rules).int32 = {gte: 1, lt: 96}];
+    // ram in GB
+    float memoryGb = 2;
+    // disk size in GB
+    float diskSizeGb = 3 [(validate.rules).float = {gte: 10, lte: 10240}];
+    repeated Volume volumes = 4;
 }
 
 message Builtin{
@@ -83,7 +123,6 @@ message ErrorHandler{
 }
 
 message Handler{
-    //
     string url = 1;
     string script = 2;
     Login login = 3;
@@ -99,8 +138,9 @@ message Handler{
     string mimeType = 8;
     // set the http response code returned when performing a redirect
     int32 redirectHttpResponseCode = 9;
-    //
+    // any url handler can use the secure setting, including static file handlers(optional, never, always)
     Secure secure = 10;
+    // the path to the directory containing the static files, from the application root directory
     string staticDir = 11;
     string staticFiles = 12;
     string upload = 13;
@@ -126,8 +166,10 @@ message HttpHeader{
 }
 
 message AutomaticScaling{
-    int32 maxInstances = 1;
-    int32 minInstances = 2;
+    // maximum number of instances that your service can scale up to
+    int32 maxNumInstances = 1;
+    // minimum number of instances given to your service
+    int32 minNumInstances = 2;
     int32 maxIdleInstances = 3;
     int32 minIdleInstances = 4;
     float targetCpuUtilization = 5;
@@ -144,8 +186,84 @@ message ManualScaling{
     int32 instances = 1;
 }
 
-message VpcAccessConnector{
+message ForwardedPort{
+    int32 hostPort = 1 [(validate.rules).int32 ={gte : 1024, lt: 65535, not_in: [8080, 8090, 8443, 10000, 10001, 11211, 24231]}];
+    int32 containerPort = 2 [(validate.rules).int32 = {gte: 1, lt: 65535, not_in: [22, 10001, 11211]}];
+}
+
+message Volume{
     string name = 1;
+    string volumeType = 2;
+    float sizeGb = 3 [(validate.rules).float = {gte: 0.001}];
+}
+
+message LivenessChecks{
+    // forward liveness checks to application container, specify a url path
+    string path = 1;
+    // time interval between checks
+    int32 checkIntervalSec = 2 [(validate.rules).int32 = {gte: 1, lte: 300}];
+    // timeout interval for each request
+    int32 timeoutSec = 3 [(validate.rules).int32 = {gte: 1, lte: 300}];
+    // an instance is unhealthy after failing this number of consecutive checks
+    int32 failureThreshold = 4 [(validate.rules).int32 = {gte: 1, lte: 10}];
+    // an unhealthy instance becomes healthy again after successfully responding to this number of consecutive checks.
+    int32 successThreshold = 5 [(validate.rules).int32 = {gte: 1, lte: 10}];
+    // The delay, after the instance starts during which health check responses are ignored
+    int32 initialDelaySec = 6 [(validate.rules).int32 = {gte: 0, lte: 3600}];
+}
+
+message ReadynessChecks{
+    // forward readiness checks to application container, specify a url path
+    string path = 1;
+    // time interval between checks
+    int32 checkIntervalSec = 2 [(validate.rules).int32 = {gte: 1, lte: 300}];
+    // timeout interval for each request
+    int32 timeoutSec = 3 [(validate.rules).int32 = {gte: 1, lte: 300}];
+    // an instance is unhealthy after failing this number of consecutive checks
+    int32 failureThreshold = 4 [(validate.rules).int32 = {gte: 1, lte: 10}];
+    // an unhealthy instance becomes healthy again after successfully responding to this number of consecutive checks
+    int32 successThreshold = 5 [(validate.rules).int32 = {gte: 1, lte: 10}];
+    // the maximum time in seconds allowed for a sufficient number of instances in a deployment to pass health checks
+    int32 appStartTimeoutSec = 6 [(validate.rules).int32 = {gte: 0, lte: 1800}];
+}
+
+message Entrypoint{
+    string commandName = 1;
+    repeated string args = 2;
+    int32 port = 3;
+}
+
+message Framework{
+    // framework name
+    string name = 1;
+    // framework version
+    string version = 2;
+}
+
+message ORM{
+    // orm name
+    string name = 1;
+    // orm version
+    string version = 2;
+}
+
+message Library{
+    // library name
+    string name = 1;
+    // library version
+    string version = 2;
+}
+
+message Database{
+    string name = 1;
+    string version = 2;
+    int32 port = 3;
+}
+
+message Git{
+    string gitUrl = 1;
+    string gitBranch = 2;
+    string gitCommit = 3;
 }
 
 enum AutoIdPolicy{
