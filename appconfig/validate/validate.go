@@ -13,17 +13,19 @@ func CustomValidate(app *pb.AppConfig) error {
 		return errors.New("app is nil")
 	}
 	for _ , v := range app.Services {
-		err := forwardedPortCheck.CustomForwardedPortValidation(v.Network.ForwardedPorts)
-		if err != nil{
-			return errors.New("invalid forwarded ports")
+		if v.Network != nil{
+			err := forwardedPortCheck.CustomForwardedPortValidation(v.Network.ForwardedPorts)
+			if err != nil{
+				return err
+			}
 		}
-		err = resourceCheck.CustomResourceValidation(v.Resources)
+		err := resourceCheck.CustomResourceValidation(v.Resources)
 		if err != nil{
-			return errors.New("invalid resource")
+			return err
 		}
 		err = runtimeCheck.CustomValidateRuntime(v)
 		if err != nil{
-			return errors.New("runtime config unavailable")
+			return err
 		}
 	}
 	return nil

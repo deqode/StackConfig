@@ -1,13 +1,16 @@
 package resourceCheck
 
-import(
-	"errors"
+import (
 	"github.com/deqodelabs/IaaC/appconfig/pb"
+
+	"errors"
 )
 
-func CustomResourceValidation(resource *pb.Resource) error{
-	if resource.Cpu != 1 && (resource.Cpu % 2) != 0 {
-		return errors.New("runtime config not valid")
+func CustomResourceValidation(resource *pb.Resource) error {
+	if resource != nil {
+		if resource.Cpu != 1 && (resource.Cpu%2) != 0 {
+			return errors.New("cpu number not valid")
+		}
 	}
 	return nil
 }
