@@ -116,7 +116,7 @@ func (s *AppService) GetAppConfigForVersion(id string, version int32) (*pb.AppCo
 	s.Logger.Debug("get app config for version method called with:", zap.String("id", id), zap.Int32("version", version))
 	var versionRange VersionRange
 	var appConfig *pb.AppConfig
-	found, err := s.Store.Get(id, versionRange)
+	found, err := s.Store.Get(id, &versionRange)
 	if err != nil {
 		s.Logger.Error("error:", zap.Error(err))
 		return nil, err
@@ -133,7 +133,7 @@ func (s *AppService) GetAppConfigForVersion(id string, version int32) (*pb.AppCo
 		return nil, errors.New("version does not exist")
 	}
 	versionId := tools.GenerateVersionId(id, version)
-	found, err = s.Store.Get(versionId, appConfig)
+	found, err = s.Store.Get(versionId, &appConfig)
 	if err != nil {
 		s.Logger.Error("error:", zap.Error(err))
 		return nil, err

@@ -69,7 +69,50 @@ func (suite *AppServiceTestSuite) TestSave() {
 	config, err = suite.appService.GetAppConfig(config.AppId)
 	assert.Equal(suite.T(), err, nil)
 	assert.Equal(suite.T(), int32(2), config.Version)
+	config, err = suite.appService.Save(config)
+	if assert.Error(suite.T(), err) {
+		assert.EqualError(suite.T(), err, "version already exist")
+	}
+	config.Version = 4
+	_, err = suite.appService.Save(config)
+	if assert.Error(suite.T(), err) {
+		assert.EqualError(suite.T(), err, "version missed")
+	}
 	suite.appService.Store.Delete(suite.appConfig.AppId)
+	defer suite.appService.Store.Close()
+}
+
+func (suite *AppServiceTestSuite) TestGetAppConfig() {
+	_, err := suite.appService.GetAppConfig("abc")
+	if assert.Error(suite.T(), err) {
+		assert.EqualError(suite.T(), err, "id for app config not found")
+	}
+	config, err := suite.appService.Save(suite.appConfig)
+	assert.Equal(suite.T(), err, nil)
+	assert.IsType(suite.T(), "abc", config.AppId)
+	_, err = suite.appService.GetAppConfig(config.AppId)
+	assert.Equal(suite.T(), err, nil)
+	defer suite.appService.Store.Close()
+}
+
+func (suite *AppServiceTestSuite) TestGetAppConfigForVersion() {
+	_, err := suite.appService.GetAppConfig("abc")
+	if assert.Error(suite.T(), err) {
+		assert.EqualError(suite.T(), err, "id for app config not found")
+	}
+	config, err := suite.appService.Save(suite.appConfig)
+	assert.Equal(suite.T(), err, nil)
+	assert.IsType(suite.T(), "abc", config.AppId)
+	_, err = suite.appService.GetAppConfigForVersion(config.AppId, 1)
+	assert.Equal(suite.T(), err, nil)
+	_, err = suite.appService.GetAppConfigForVersion(config.AppId, 2)
+	if assert.Error(suite.T(), err) {
+		assert.EqualError(suite.T(), err, "version does not exist")
+	}
+	_, err = suite.appService.GetAppConfigForVersion(config.AppId, 0)
+	if assert.Error(suite.T(), err) {
+		assert.EqualError(suite.T(), err, "version is deprecated")
+	}
 	defer suite.appService.Store.Close()
 }
 
