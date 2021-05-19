@@ -1,0 +1,7 @@
+#test file
+coverage.out
+coverage.html
+.cover
+
+
+appconfig/leveldb/
