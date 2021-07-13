@@ -2,7 +2,7 @@ package runtimeCheck
 
 import(
 	"errors"
-	"github.com/deqodelabs/IaaC/appconfig/pb"
+	"github.com/deqodelabs/IaaC/stackconfig/pb"
 )
 
 func CustomValidateRuntime(service *pb.ServiceConfig) error {

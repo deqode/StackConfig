@@ -3,7 +3,7 @@ package resourceCheck
 import (
 	"testing"
 
-	"github.com/deqodelabs/IaaC/appconfig/pb"
+	"github.com/deqodelabs/IaaC/stackconfig/pb"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )

@@ -1,7 +1,7 @@
 package resourceCheck
 
 import (
-	"github.com/deqodelabs/IaaC/appconfig/pb"
+	"github.com/deqodelabs/IaaC/stackconfig/pb"
 
 	"errors"
 )

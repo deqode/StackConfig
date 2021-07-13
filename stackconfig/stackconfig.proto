@@ -3,7 +3,7 @@ option go_package = ".;pb";
 
 import "validate/validate.proto";
 
-message AppConfig{
+message StackConfig{
     int32 version = 1;
     string appId = 2;
     string appName = 3;
@@ -96,7 +96,7 @@ message Network{
     string name = 2;
     // segment your network and use a custom subnetwork
     string subnetworkName = 3;
-    // set to true to configure App Engine to route multiple sequential requests for a given user to the same App Engine instance
+    // set to true to configure Stack Engine to route multiple sequential requests for a given user to the same Stack Engine instance
     bool sessionAffinity = 4;
     // forward ports from instance to the container
     repeated ForwardedPort forwardedPorts = 5;

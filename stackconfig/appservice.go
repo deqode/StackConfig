@@ -1,17 +1,17 @@
-package appconfig
+package stackconfig
 
 import (
 	"errors"
 
-	"github.com/deqodelabs/IaaC/appconfig/pb"
-	"github.com/deqodelabs/IaaC/appconfig/tools"
-	"github.com/deqodelabs/IaaC/appconfig/validate"
+	"github.com/deqodelabs/IaaC/stackconfig/pb"
+	"github.com/deqodelabs/IaaC/stackconfig/tools"
+	"github.com/deqodelabs/IaaC/stackconfig/validate"
 	uuid "github.com/nu7hatch/gouuid"
 	"github.com/philippgille/gokv"
 	"go.uber.org/zap"
 )
 
-type AppService struct {
+type StackService struct {
 	Store  gokv.Store
 	Logger *zap.Logger
 }
@@ -21,7 +21,7 @@ type VersionRange struct {
 	LatestVersion int32
 }
 
-func (s *AppService) ValidateAppConfig(app *pb.AppConfig) error {
+func (s *StackService) ValidateAppConfig(app *pb.StackConfig) error {
 	s.Logger.Debug("validate app config method called with:", zap.Any("app", app))
 	err := app.Validate()
 	if err != nil {
@@ -36,7 +36,7 @@ func (s *AppService) ValidateAppConfig(app *pb.AppConfig) error {
 	return nil
 }
 
-func (s *AppService) Save(app *pb.AppConfig) (*pb.AppConfig, error) {
+func (s *StackService) Save(app *pb.StackConfig) (*pb.StackConfig, error) {
 	s.Logger.Debug("save app config method called with:", zap.Any("app", app))
 	err := s.ValidateAppConfig(app)
 	if err != nil {
@@ -86,10 +86,10 @@ func (s *AppService) Save(app *pb.AppConfig) (*pb.AppConfig, error) {
 	return app, nil
 }
 
-func (s *AppService) GetAppConfig(id string) (*pb.AppConfig, error) {
+func (s *StackService) GetAppConfig(id string) (*pb.StackConfig, error) {
 	s.Logger.Debug("get app config method called with:", zap.String("id", id))
 	var versionRange VersionRange
-	var appConfig pb.AppConfig
+	var appConfig pb.StackConfig
 	found, err := s.Store.Get(id, &versionRange)
 	if err != nil {
 		s.Logger.Error("error:", zap.Error(err))
@@ -112,10 +112,10 @@ func (s *AppService) GetAppConfig(id string) (*pb.AppConfig, error) {
 	return &appConfig, nil
 }
 
-func (s *AppService) GetAppConfigForVersion(id string, version int32) (*pb.AppConfig, error) {
+func (s *StackService) GetAppConfigForVersion(id string, version int32) (*pb.StackConfig, error) {
 	s.Logger.Debug("get app config for version method called with:", zap.String("id", id), zap.Int32("version", version))
 	var versionRange VersionRange
-	var appConfig *pb.AppConfig
+	var appConfig *pb.StackConfig
 	found, err := s.Store.Get(id, &versionRange)
 	if err != nil {
 		s.Logger.Error("error:", zap.Error(err))

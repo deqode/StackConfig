@@ -1,9 +1,9 @@
-package appconfig
+package stackconfig
 
 import (
 	"testing"
 
-	"github.com/deqodelabs/IaaC/appconfig/pb"
+	"github.com/deqodelabs/IaaC/stackconfig/pb"
 	"github.com/philippgille/gokv/leveldb"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
@@ -12,8 +12,8 @@ import (
 
 type AppServiceTestSuite struct {
 	suite.Suite
-	appConfig  *pb.AppConfig
-	appService AppService
+	appConfig  *pb.StackConfig
+	appService StackService
 }
 
 func (suite *AppServiceTestSuite) SetupTest() {
@@ -24,7 +24,7 @@ func (suite *AppServiceTestSuite) SetupTest() {
 		panic(err)
 	}
 	logger := zap.NewExample()
-	appService := AppService{
+	appService := StackService{
 		Store:  store,
 		Logger: logger,
 	}
@@ -48,7 +48,7 @@ func (suite *AppServiceTestSuite) SetupTest() {
 	}
 	var services []*pb.ServiceConfig
 	services = append(services, &service)
-	app := pb.AppConfig{
+	app := pb.StackConfig{
 		AppName:  "app1",
 		Version:  1,
 		Services: services,

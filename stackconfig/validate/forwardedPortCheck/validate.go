@@ -2,7 +2,7 @@ package forwardedPortCheck
 
 import (
 	"errors"
-	"github.com/deqodelabs/IaaC/appconfig/pb"
+	"github.com/deqodelabs/IaaC/stackconfig/pb"
 )
 
 func CustomForwardedPortValidation(forwardedPorts []*pb.ForwardedPort) error{
