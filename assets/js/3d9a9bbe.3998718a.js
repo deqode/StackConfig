@@ -1,0 +1,1 @@
+(self.webpackChunkappconfig=self.webpackChunkappconfig||[]).push([[740],{3111:function(a){"use strict";a.exports=JSON.parse('{"allTagsPath":"/StackConfig/blog/tags","slug":"docusaurus","name":"docusaurus","count":3,"permalink":"/StackConfig/blog/tags/docusaurus"}')}}]);

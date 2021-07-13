@@ -1,0 +1,1 @@
+(self.webpackChunkappconfig=self.webpackChunkappconfig||[]).push([[163],{2352:function(e){"use strict";e.exports=JSON.parse('{"permalink":"/StackConfig/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":3,"previousPage":null,"nextPage":null,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);

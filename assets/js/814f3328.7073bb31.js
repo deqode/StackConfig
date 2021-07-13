@@ -1,0 +1,1 @@
+(self.webpackChunkappconfig=self.webpackChunkappconfig||[]).push([[535],{6353:function(e){"use strict";e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Welcome","permalink":"/StackConfig/blog/welcome"},{"title":"Hello","permalink":"/StackConfig/blog/hello-world"},{"title":"Hola","permalink":"/StackConfig/blog/hola"}]}')}}]);
