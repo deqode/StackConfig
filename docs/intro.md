@@ -1,20 +1,18 @@
-# What is Stack Config
+# What is StackConfig
 
 ## About
-This is a Golang library that provides service to store key value for an application configuration. It uses Gokv key value store for storing multiple version of an application config. An application might consist of multiple services, an array of such services is stored in the application configuration. Each service contains details such as service runtime, databse, CPU, memory, network, scaling and other general settings including environment variables.
-
+We have defined a universal backend application configuration standard. An application might consist of a single or multiple services, an array of such services is stored in the application configuration. Each service contains details such as service runtime, databse, CPU, memory, network, scaling and other general settings including environment variables.
+Using this Golang library users can Validate, Store, Get and maintain multiple versions of an application configuration in their own databse. User can use this library with any databse supportd by Gokv library. Interface for Stack defines all these implemented methods.
 ## Where can be used?
-- If you want to maintain multiple versions of an application configuration
-- If you want to maintain multiple services configuration in an application configuration
-- If you want to generate cloud infrastructure template for an app
+- to generate cloud infrastructure template for an app
 
 ## Usage
-go get github.com/deqodelabs/IaaC
+go get https://github.com/deqode/StackConfig
 
 ### Example with leveldb
 ```go
 import (
-    "github.com/deqodelabs/IaaC/stackconfig"
+    "github.com/deqode/StackConfig/stackconfig"
     "github.com/philippgille/gokv/leveldb"
     "go.uber.org/zap"
 )
@@ -36,7 +34,7 @@ function main() {
 ### Example with postgresql
 ```go
 import (
-    "github.com/deqodelabs/IaaC/stackconfig"
+    "github.com/deqode/StackConfig/stackconfig"
     "github.com/philippgille/gokv/postgresql"
     "go.uber.org/zap"
 )
@@ -57,7 +55,7 @@ function main() {
 ### Example with s3
 ```go
 import (
-    "github.com/deqodelabs/IaaC/stackconfig"
+    "github.com/deqode/StackConfig/stackconfig"
     "github.com/philippgille/gokv/s3"
     "go.uber.org/zap"
 )

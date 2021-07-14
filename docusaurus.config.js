@@ -3,21 +3,21 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: 'Stack Config',
-  tagline: 'Maintain Versioned Application Configuration',
+  title: 'StackConfig',
+  tagline: 'Maintain a Versioned Standard Application Configuration',
   url: 'https://deqode.github.io/',
   baseUrl: '/StackConfig/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/logo.png',
   organizationName: 'deqode', // Usually your GitHub org/user name.
   projectName: 'StackConfig', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'Stack Config',
+      title: 'StackConfig',
       logo: {
         alt: 'My Site Logo',
-        src: 'img/logo.svg',
+        src: 'img/logo.png',
       },
       items: [
         {
@@ -76,6 +76,11 @@ module.exports = {
           ],
         },
       ],
+      logo: {
+        alt: 'Deqode logo',
+        src: 'img/deq.svg',
+        href: 'https://deqode.com/',
+      },
       copyright: `Copyright © ${new Date().getFullYear()} Deqode, Inc.`,
     },
     prism: {
