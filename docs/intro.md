@@ -7,7 +7,7 @@ Using this Golang library users can Validate, Store, Get and maintain multiple v
 - to generate cloud infrastructure template for an app
 
 ## Usage
-go get https://github.com/deqode/StackConfig
+go get github.com/deqode/StackConfig
 
 ### Example with leveldb
 ```go
