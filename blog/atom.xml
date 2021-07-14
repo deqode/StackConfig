@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://deqode.github.io/StackConfig/blog</id>
-    <title>Stack Config Blog</title>
+    <title>StackConfig Blog</title>
     <updated>2019-05-30T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://deqode.github.io/StackConfig/blog"/>
-    <subtitle>Stack Config Blog</subtitle>
-    <icon>https://deqode.github.io/StackConfig/img/favicon.ico</icon>
+    <subtitle>StackConfig Blog</subtitle>
+    <icon>https://deqode.github.io/StackConfig/img/logo.png</icon>
     <entry>
         <title type="html"><![CDATA[Welcome]]></title>
         <id>welcome</id>
